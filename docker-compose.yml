@@ -1,0 +1,22 @@
+services:
+  app-java:               # Tên dịch vụ tự đặt
+    build: .              # Tìm Dockerfile ở thư mục hiện tại để build
+    ports:
+      - "8080:8080"       # Mở cổng cho sinh viên truy cập localhost:8080
+    depends_on:
+      - db-sqlserver       # Chờ DB sẵn sàng rồi mới chạy App
+    environment:
+      # Kich hoat profile compose de dung SQL Server
+      SPRING_PROFILES_ACTIVE: compose
+
+  db-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest   # Tải image từ Docker Hub
+    environment:
+      SA_PASSWORD: SqlServer@123
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+    volumes:
+      - db_data:/var/opt/mssql   # Dữ liệu DB không bị mất khi xóa container
+
+volumes:
+  db_data:               # Khai báo volume dùng chung
